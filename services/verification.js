@@ -6,6 +6,7 @@ const config = require('../config');
 class UserService {
   async register(username, password) {
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(hashedPassword)
     return repo.createUser(username, hashedPassword);
   }
 
@@ -14,7 +15,9 @@ class UserService {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new Error('Invalid credentials');
     }
-    return jwt.sign({ userId: user.id, role: user.role }, config.jwtSecret, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id, role: user.role }, config.jwtSecret, { expiresIn: '1h' })
+    console.log(token)
+    return token;
   }
 }
 
