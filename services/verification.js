@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const repo = require('../repositories/bd');
-const config = require('../config');
+const config = require('../config').secret();
 
 class UserService {
   async register(username, password) {

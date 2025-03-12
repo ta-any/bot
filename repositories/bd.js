@@ -1,4 +1,4 @@
-const pool = require('../config/mysql');
+const pool = require('../config').pool();
 const User = require('../domain/User');
 
 class UserRepository {
