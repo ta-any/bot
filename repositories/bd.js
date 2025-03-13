@@ -1,7 +1,7 @@
 const pool = require('../config').pool();
 const User = require('../domain/User');
 
-class UserRepository {
+class Repository {
   async findByUsername(username) {
     const [rows] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
     if (rows.length === 0) return null;
@@ -76,7 +76,7 @@ class UserRepository {
       console.log("FROM BD checkBalance: ", ERROR)
     }
   }
-  async getPriceModel(id){
+  async getModel(id){
     try {
       console.log("FROM BD getPriceModel: ", id)
       const [result] = await pool.execute(
@@ -89,7 +89,45 @@ class UserRepository {
     }
   }
 
+  async createModel(data){
+    try {
+      const { model_id, name, price, description, config, token } = data
+      const info = await pool.execute(`
+        INSERT INTO models (model_id, name, price, description, config, token)
+        VALUES (?, ?, ?, ?, ?, ?)`, [model_id, name, price, description, config, token], (error, results, fields) => {
+        if (error) throw error;
+        console.log('Данные успешно добавлены');
+      })
+    } catch (ERROR){
+      console.log('from createModel: ', ERROR)
+    }
+  }
+  async isModel(id){
+    try {
+      const info = await pool.execute(`SELECT * FROM models WHERE model_id = ?;`, [id], (error, results, fields) => {
+        if (error) throw error;
+        console.log('добавлены has');
+      })
+      console.log('from isModel info: ', info)
+      return info[0].length !== 0
 
+    } catch (ERROR){
+      console.log('from isModel: ', ERROR)
+    }
+  }
+  async findByIdAndDelete(id){
+    try {
+      const info = await pool.execute(`DELETE FROM models WHERE model_id = ?;`, [id], (error, results, fields) => {
+        if (error) throw error;
+        console.log('добавлены DELETE');
+      })
+      console.log('from findByIdAndDelete info: ', info)
+      return true
+
+    } catch (ERROR){
+      console.log('from isModel: ', ERROR)
+    }
+  }
 }
 
-module.exports = new UserRepository();
+module.exports = new Repository();

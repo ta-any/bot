@@ -70,9 +70,15 @@ class AuthController {
                     res.status(400).json({ error: 'Баланс меньше нуля' });
                 } else {
                     const priceModel = Number(await models.getPriceModel(model))
-
+                    const txt = body.msg
                     console.log("Balance: ", balance)
                     console.log('priceModel: ', priceModel)
+
+                    console.log("Text token: ", txt)
+                    const cost = await models.calculatePrice(txt, model)
+
+                    console.log("calculatePrice", cost)
+
 
                     if(balance < priceModel){
                         res.status(400).json({ error: 'Недостаточно средств.' });
@@ -80,7 +86,8 @@ class AuthController {
                         console.log('Balance good')
                         // ToDo Запрос в API
 
-                        await verification.setOff(priceModel, decoded.userId)
+
+                        await verification.setOff(cost, decoded.userId)
                         res.status(201).json({
                             message: 'User replenishBalance successfully'
                         });
