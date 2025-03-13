@@ -51,8 +51,12 @@ class Model {
                 if(!await repo.isModel(itemId)){
                     return res.status(400).json({ message: 'Некорректный ID' });
                 }
-
-
+                const collect = await models.collectData(itemId, updateData)
+                if(collect !== null){
+                    await repo.updateModel(itemId, collect)
+                } else {
+                    return res.status(404).json({ message: 'No correct data!' });
+                }
                 res.status(200).json({ message: 'Элемент успешно change'});
             } else {
                 return res.status(404).json({ message: 'Элемент не найден' });

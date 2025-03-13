@@ -117,7 +117,7 @@ class Repository {
   }
   async findByIdAndDelete(id){
     try {
-      const info = await pool.execute(`DELETE FROM models WHERE model_id = ?;`, [id], (error, results, fields) => {
+      const info = await pool.execute(`DELETE FROM models WHERE model_id = ?`, [id], (error, results, fields) => {
         if (error) throw error;
         console.log('добавлены DELETE');
       })
@@ -126,6 +126,23 @@ class Repository {
 
     } catch (ERROR){
       console.log('from isModel: ', ERROR)
+    }
+  }
+  async updateModel(ID, data){
+    try {
+      const {id, model_id, name, price, description, config, token } = data
+      const info = await pool.execute(`UPDATE models
+                                          SET model_id = ?, name = ?, price = ?, description = ?, config = ?, token = ?
+                                          WHERE id = ?;`, [model_id, name, price, description, config, token, id ],
+          (error, results, fields) => {
+        if (error) throw error;
+        console.log('добавлены CHANGE');
+      })
+      console.log('from updateModel info: ', info)
+      return true
+
+    } catch (ERROR){
+      console.log('from updateModel: ', ERROR)
     }
   }
 }
