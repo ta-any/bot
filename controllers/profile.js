@@ -2,6 +2,8 @@ const verification = require('../services/verification');
 const models = require('../services/models')
 const jwt = require("jsonwebtoken");
 const config = require('../config').secret();
+const repoAPI = require('../repositories/API');
+const repo = require('../repositories/bd')
 
 class AuthController {
     async register(req, res) {
@@ -84,12 +86,13 @@ class AuthController {
                         res.status(400).json({ error: 'Недостаточно средств.' });
                     } else {
                         console.log('Balance good')
-                        // ToDo Запрос в API
-
+                        const [url, token] = await repo.getConfigModel(model)
+                        const answer = await repoAPI.walkTo(url, token).then((body) =>  body)
 
                         await verification.setOff(cost, decoded.userId)
                         res.status(201).json({
-                            message: 'User replenishBalance successfully'
+                            message: 'User replenishBalance successfully',
+                            answer: answer
                         });
                     }
                 }

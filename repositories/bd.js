@@ -145,6 +145,22 @@ class Repository {
       console.log('from updateModel: ', ERROR)
     }
   }
+  async getConfigModel(id){
+    try {
+      const [result] = await pool.execute(
+          "SELECT * FROM models WHERE model_id = ?",
+          [id], (error, results, fields) => {
+            if (error) throw error;
+          }
+      );
+      const obj = result[0]
+      console.log('from getConfigModel result: ', obj)
+      return [obj.config, obj.token]
+
+    } catch (ERROR){
+      console.log('from getConfigModel: ', ERROR)
+    }
+  }
 }
 
 module.exports = new Repository();
